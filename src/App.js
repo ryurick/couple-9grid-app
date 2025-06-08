@@ -43,81 +43,79 @@ function App() {
 
   const handleDownload = async () => {
     if (gridRef.current) {
-      const canvas = await html2canvas(gridRef.current, {
-        backgroundColor: null,
-      });
+      try {
+        const canvas = await html2canvas(gridRef.current, {
+          backgroundColor: null,
+          scale: 2, // 高解像度で出力
+        });
 
-      // iPhoneの場合
-      if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-        try {
-          // 画像をBlobに変換
-          const blob = await new Promise((resolve) =>
-            canvas.toBlob(resolve, "image/png")
-          );
-          const file = new File([blob], "9grid.png", { type: "image/png" });
+        // iPhoneの場合
+        if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+          // 画像をDataURLに変換
+          const imageData = canvas.toDataURL("image/png");
 
-          // Web Share APIが利用可能な場合
-          if (navigator.share) {
-            await navigator.share({
-              files: [file],
-              title: "9マスイメージ",
-              text: "9マスイメージをシェアします",
-            });
-          } else {
-            // Web Share APIが利用できない場合は、従来の方法で表示
-            const imageData = canvas.toDataURL("image/png");
-            const img = new Image();
-            img.src = imageData;
-            img.style.maxWidth = "100%";
-            img.style.height = "auto";
+          // 画像を表示するモーダルを作成
+          const modal = document.createElement("div");
+          modal.style.position = "fixed";
+          modal.style.top = "0";
+          modal.style.left = "0";
+          modal.style.width = "100%";
+          modal.style.height = "100%";
+          modal.style.backgroundColor = "rgba(0, 0, 0, 0.9)";
+          modal.style.display = "flex";
+          modal.style.flexDirection = "column";
+          modal.style.alignItems = "center";
+          modal.style.justifyContent = "center";
+          modal.style.zIndex = "9999";
 
-            const modal = document.createElement("div");
-            modal.style.position = "fixed";
-            modal.style.top = "0";
-            modal.style.left = "0";
-            modal.style.width = "100%";
-            modal.style.height = "100%";
-            modal.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-            modal.style.display = "flex";
-            modal.style.flexDirection = "column";
-            modal.style.alignItems = "center";
-            modal.style.justifyContent = "center";
-            modal.style.zIndex = "9999";
+          // 画像を表示
+          const img = new Image();
+          img.src = imageData;
+          img.style.maxWidth = "90%";
+          img.style.maxHeight = "80vh";
+          img.style.objectFit = "contain";
+          img.style.borderRadius = "12px";
 
-            const text = document.createElement("p");
-            text.textContent = "画像を長押しして保存してください";
-            text.style.color = "white";
-            text.style.marginBottom = "20px";
-            text.style.fontSize = "16px";
+          // 説明テキスト
+          const text = document.createElement("p");
+          text.textContent = "画像を長押しして保存してください";
+          text.style.color = "white";
+          text.style.marginBottom = "20px";
+          text.style.fontSize = "16px";
+          text.style.textAlign = "center";
+          text.style.padding = "0 20px";
 
-            const closeButton = document.createElement("button");
-            closeButton.textContent = "閉じる";
-            closeButton.style.marginTop = "20px";
-            closeButton.style.padding = "10px 20px";
-            closeButton.style.backgroundColor = "white";
-            closeButton.style.border = "none";
-            closeButton.style.borderRadius = "5px";
-            closeButton.style.cursor = "pointer";
+          // 閉じるボタン
+          const closeButton = document.createElement("button");
+          closeButton.textContent = "閉じる";
+          closeButton.style.marginTop = "20px";
+          closeButton.style.padding = "12px 24px";
+          closeButton.style.backgroundColor = "white";
+          closeButton.style.border = "none";
+          closeButton.style.borderRadius = "25px";
+          closeButton.style.cursor = "pointer";
+          closeButton.style.fontSize = "16px";
+          closeButton.style.fontWeight = "bold";
+          closeButton.style.color = "#333";
 
-            closeButton.onclick = () => {
-              document.body.removeChild(modal);
-            };
+          closeButton.onclick = () => {
+            document.body.removeChild(modal);
+          };
 
-            modal.appendChild(text);
-            modal.appendChild(img);
-            modal.appendChild(closeButton);
-            document.body.appendChild(modal);
-          }
-        } catch (error) {
-          console.error("画像の保存に失敗しました:", error);
-          alert("画像の保存に失敗しました。もう一度お試しください。");
+          modal.appendChild(text);
+          modal.appendChild(img);
+          modal.appendChild(closeButton);
+          document.body.appendChild(modal);
+        } else {
+          // その他のデバイスの場合
+          const link = document.createElement("a");
+          link.download = "9grid.png";
+          link.href = canvas.toDataURL();
+          link.click();
         }
-      } else {
-        // その他のデバイスの場合
-        const link = document.createElement("a");
-        link.download = "9grid.png";
-        link.href = canvas.toDataURL();
-        link.click();
+      } catch (error) {
+        console.error("画像の保存に失敗しました:", error);
+        alert("画像の保存に失敗しました。もう一度お試しください。");
       }
     }
   };
