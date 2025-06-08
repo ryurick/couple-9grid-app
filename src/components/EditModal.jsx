@@ -135,7 +135,7 @@ const EditModal = ({ isOpen, onClose, cellData, onSave }) => {
                     <button
                       key={index}
                       onClick={() => setCategory(suggestion)}
-                      className="px-4 py-1.5 text-sm bg-purple-50 text-purple-600 rounded-full hover:bg-purple-100 transition-colors border border-purple-100"
+                      className="px-3 py-1 text-xs bg-purple-50 text-purple-600 rounded-full hover:bg-purple-100 transition-colors border border-purple-100"
                     >
                       {typeof suggestion === "object"
                         ? suggestion.ja
