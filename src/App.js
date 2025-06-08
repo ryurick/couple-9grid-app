@@ -158,13 +158,17 @@ function App() {
     <div
       className="min-h-screen relative overflow-hidden bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 py-2 font-zenmaru"
       onTouchMove={(e) => {
-        e.preventDefault();
+        if (selectedCell === null) {
+          e.preventDefault();
+        }
       }}
       onTouchStart={(e) => {
-        e.preventDefault();
+        if (selectedCell === null) {
+          e.preventDefault();
+        }
       }}
       style={{
-        touchAction: "none",
+        touchAction: selectedCell === null ? "none" : "auto",
         position: "fixed",
         width: "100%",
         height: "100%",

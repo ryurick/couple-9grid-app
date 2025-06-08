@@ -130,6 +130,36 @@ const EditModal = ({ isOpen, onClose, cellData, onSave }) => {
             />
             {suggestions.length > 0 && (
               <div className="mt-3">
+                <div className="flex items-center justify-between mb-2">
+                  <button
+                    onClick={() => {
+                      // 現在のカテゴリーを除いたリストからランダムに6つを選択
+                      const filteredCategories = suggestionCategories.filter(
+                        (cat) => cat !== cellData?.category
+                      );
+                      const randomSuggestions = filteredCategories
+                        .sort(() => Math.random() - 0.5)
+                        .slice(0, 9);
+                      setSuggestions(randomSuggestions);
+                    }}
+                    className="p-1.5 text-gray-500 hover:text-purple-600 transition-colors rounded-full hover:bg-purple-50"
+                    title="サジェストを更新"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      />
+                    </svg>
+                  </button>
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {suggestions.map((suggestion, index) => (
                     <button
