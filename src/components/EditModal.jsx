@@ -98,7 +98,7 @@ const EditModal = ({ isOpen, onClose, cellData, onSave }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[85vh] overflow-y-auto">
         {/* ヘッダー */}
         <div className="flex items-center justify-between p-4 border-b">
           <h3 className="font-semibold text-lg text-gray-800">
@@ -318,11 +318,11 @@ const EditModal = ({ isOpen, onClose, cellData, onSave }) => {
             <label className="block text-sm font-medium text-gray-600 mb-1">
               メモ（任意）
             </label>
-            <textarea
+            <input
+              type="text"
               value={memo}
               onChange={(e) => setMemo(e.target.value)}
               className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent text-sm"
-              rows={2}
               placeholder="画像の補足やメモを入力"
             />
           </div>

@@ -110,7 +110,7 @@ function App() {
         {/* 9マスグリッド */}
         <div
           ref={gridRef}
-          className="grid grid-cols-3 gap-[1px] w-full max-w-md sm:max-w-lg md:max-w-xl"
+          className="grid grid-cols-3 gap-[1px] w-full max-w-md sm:max-w-lg md:max-w-xl mt-32"
         >
           {gridData.map((cell, index) => (
             <GridCell
