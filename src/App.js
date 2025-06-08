@@ -98,7 +98,7 @@ function App() {
         <div className="fixed top-0 left-0 w-full flex flex-col items-center z-30 pt-6 pb-2 bg-gradient-to-b from-pink-100/80 via-purple-100/60 to-transparent">
           <div className="flex flex-col items-center justify-center gap-2">
             <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-fuchsia-400 to-purple-500 drop-shadow mb-2 font-zenmaru">
-              ♡9マスイメージ
+              9マスイメージ
             </h1>
           </div>
           <p className="text-base md:text-lg text-pink-400 bg-white/70 rounded-full px-4 py-2 inline-block shadow-sm mt-2 font-zenmaru">
