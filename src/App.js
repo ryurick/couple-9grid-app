@@ -46,10 +46,37 @@ function App() {
       const canvas = await html2canvas(gridRef.current, {
         backgroundColor: null,
       });
-      const link = document.createElement("a");
-      link.download = "9grid.png";
-      link.href = canvas.toDataURL();
-      link.click();
+
+      // Web Share APIが利用可能かチェック
+      if (navigator.share) {
+        try {
+          // CanvasをBlobに変換
+          const blob = await new Promise((resolve) =>
+            canvas.toBlob(resolve, "image/png")
+          );
+          const file = new File([blob], "9grid.png", { type: "image/png" });
+
+          // シェア
+          await navigator.share({
+            files: [file],
+            title: "9マスイメージ",
+            text: "9マスイメージをシェアします！",
+          });
+        } catch (error) {
+          console.error("シェアに失敗しました:", error);
+          // シェアに失敗した場合は従来のダウンロード方法にフォールバック
+          const link = document.createElement("a");
+          link.download = "9grid.png";
+          link.href = canvas.toDataURL();
+          link.click();
+        }
+      } else {
+        // Web Share APIが利用できない場合は従来のダウンロード方法を使用
+        const link = document.createElement("a");
+        link.download = "9grid.png";
+        link.href = canvas.toDataURL();
+        link.click();
+      }
     }
   };
 
