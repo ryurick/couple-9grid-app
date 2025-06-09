@@ -16,7 +16,6 @@ function App() {
   );
 
   const [selectedCell, setSelectedCell] = useState(null);
-  const [showPreview, setShowPreview] = useState(false);
   const gridRef = useRef(null);
 
   const handleCellSelect = (id) => {
@@ -44,114 +43,55 @@ function App() {
   const handleDownload = async () => {
     if (gridRef.current) {
       try {
+        // キャプチャ前に要素のスタイルを保存
+        const originalStyle = gridRef.current.style.cssText;
+
+        // キャプチャ用のスタイルを設定
+        gridRef.current.style.position = "relative";
+        gridRef.current.style.transform = "none";
+        gridRef.current.style.width = `${gridRef.current.offsetWidth}px`;
+        gridRef.current.style.height = `${gridRef.current.offsetHeight}px`;
+        gridRef.current.style.margin = "0";
+        gridRef.current.style.padding = "0";
+        gridRef.current.style.display = "grid";
+        gridRef.current.style.gridTemplateColumns = "repeat(3, 1fr)";
+        gridRef.current.style.gap = "1px";
+
         const canvas = await html2canvas(gridRef.current, {
           backgroundColor: null,
-          scale: 2, // 高解像度で出力
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          onclone: (clonedDoc) => {
+            const clonedElement = clonedDoc.querySelector("[data-grid-ref]");
+            if (clonedElement) {
+              clonedElement.style.transform = "none";
+              clonedElement.style.position = "relative";
+              clonedElement.style.width = `${gridRef.current.offsetWidth}px`;
+              clonedElement.style.height = `${gridRef.current.offsetHeight}px`;
+              clonedElement.style.margin = "0";
+              clonedElement.style.padding = "0";
+              clonedElement.style.display = "grid";
+              clonedElement.style.gridTemplateColumns = "repeat(3, 1fr)";
+              clonedElement.style.gap = "1px";
+            }
+          },
         });
 
-        // iPhoneの場合
-        if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-          // 画像をDataURLに変換
-          const imageData = canvas.toDataURL("image/png");
+        // 元のスタイルを復元
+        gridRef.current.style.cssText = originalStyle;
 
-          // 画像を表示するモーダルを作成
-          const modal = document.createElement("div");
-          modal.style.position = "fixed";
-          modal.style.top = "0";
-          modal.style.left = "0";
-          modal.style.width = "100%";
-          modal.style.height = "100%";
-          modal.style.backgroundColor = "rgba(0, 0, 0, 0.9)";
-          modal.style.display = "flex";
-          modal.style.flexDirection = "column";
-          modal.style.alignItems = "center";
-          modal.style.justifyContent = "center";
-          modal.style.zIndex = "9999";
-
-          // 画像を表示
-          const img = new Image();
-          img.src = imageData;
-          img.style.maxWidth = "90%";
-          img.style.maxHeight = "80vh";
-          img.style.objectFit = "contain";
-          img.style.borderRadius = "12px";
-
-          // 説明テキスト
-          const text = document.createElement("p");
-          text.textContent = "画像を長押しして保存してください";
-          text.style.color = "white";
-          text.style.marginBottom = "20px";
-          text.style.fontSize = "16px";
-          text.style.textAlign = "center";
-          text.style.padding = "0 20px";
-
-          // 閉じるボタン
-          const closeButton = document.createElement("button");
-          closeButton.textContent = "閉じる";
-          closeButton.style.marginTop = "20px";
-          closeButton.style.padding = "12px 24px";
-          closeButton.style.backgroundColor = "white";
-          closeButton.style.border = "none";
-          closeButton.style.borderRadius = "25px";
-          closeButton.style.cursor = "pointer";
-          closeButton.style.fontSize = "16px";
-          closeButton.style.fontWeight = "bold";
-          closeButton.style.color = "#333";
-
-          closeButton.onclick = () => {
-            document.body.removeChild(modal);
-          };
-
-          modal.appendChild(text);
-          modal.appendChild(img);
-          modal.appendChild(closeButton);
-          document.body.appendChild(modal);
-        } else {
-          // その他のデバイスの場合
-          const link = document.createElement("a");
-          link.download = "9grid.png";
-          link.href = canvas.toDataURL();
-          link.click();
-        }
+        const link = document.createElement("a");
+        link.download = "9grid.png";
+        link.href = canvas.toDataURL("image/png", 1.0);
+        link.click();
       } catch (error) {
         console.error("画像の保存に失敗しました:", error);
         alert("画像の保存に失敗しました。もう一度お試しください。");
       }
     }
   };
-
-  // プレビュー画面
-  if (showPreview) {
-    return (
-      <div className="h-screen flex flex-col bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 font-zenmaru overflow-hidden">
-        <div className="w-full flex justify-end px-2 pt-2 pb-1 z-10">
-          <button
-            className="px-4 py-2 bg-white/80 rounded-full shadow text-pink-500 font-bold hover:bg-white"
-            onClick={() => setShowPreview(false)}
-          >
-            閉じる
-          </button>
-        </div>
-        <div className="flex-1 flex items-center justify-center">
-          <div className="grid grid-cols-3 gap-[1px] w-full h-full max-w-xs sm:max-w-sm md:max-w-md">
-            {gridData.map((cell, index) => (
-              <GridCell
-                key={cell.id}
-                id={cell.id}
-                category={cell.category}
-                image={cell.image}
-                memo={cell.memo}
-                onSelect={() => {}}
-                onRemove={() => {}}
-                isPreview={true}
-                className="aspect-square"
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div
@@ -201,6 +141,7 @@ function App() {
         {/* 9マスグリッド */}
         <div
           ref={gridRef}
+          data-grid-ref="true"
           className="grid grid-cols-3 gap-[1px] w-full max-w-md sm:max-w-lg md:max-w-xl mt-20"
           style={{ touchAction: "none" }}
         >
