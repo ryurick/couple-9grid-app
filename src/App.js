@@ -202,7 +202,7 @@ function App() {
         {/* 9マスグリッド */}
         <div
           ref={gridRef}
-          className="grid grid-cols-3 gap-[1px] w-full max-w-md sm:max-w-lg md:max-w-xl mt-32"
+          className="grid grid-cols-3 gap-[1px] w-full max-w-md sm:max-w-lg md:max-w-xl mt-20"
           style={{ touchAction: "none" }}
         >
           {gridData.map((cell, index) => (
@@ -222,16 +222,25 @@ function App() {
         </div>
 
         {/* フッター */}
-        <div
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 w-full max-w-md sm:max-w-lg md:max-w-xl px-2"
-          style={{ touchAction: "none" }}
-        >
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 w-full max-w-md sm:max-w-lg md:max-w-xl px-2">
           <button
             className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white px-8 py-3 rounded-full font-medium hover:opacity-90 transition-opacity shadow-lg hover:shadow-xl"
             onClick={handleDownload}
           >
             📸 9マス画像を保存する
           </button>
+
+          {/* 広告 */}
+          <div className="mt-4 w-full">
+            <ins
+              className="adsbygoogle"
+              style={{ display: "block" }}
+              data-ad-client="ca-pub-7166490585913338"
+              data-ad-slot="YOUR_AD_SLOT_ID"
+              data-ad-format="auto"
+              data-full-width-responsive="true"
+            />
+          </div>
         </div>
 
         {/* 編集モーダル */}
