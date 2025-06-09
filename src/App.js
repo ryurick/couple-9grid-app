@@ -143,9 +143,8 @@ function App() {
                 memo={cell.memo}
                 onSelect={() => {}}
                 onRemove={() => {}}
-                className={
-                  index >= 3 && index <= 5 ? "mt-[0.25px] mb-[0.25px]" : ""
-                }
+                isPreview={true}
+                className="aspect-square"
               />
             ))}
           </div>
