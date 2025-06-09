@@ -2,7 +2,6 @@ import React, { useState, useRef } from "react";
 import GridCell from "./components/GridCell";
 import EditModal from "./components/EditModal";
 import { initialCategories } from "./utils/constants";
-import html2canvas from "html2canvas";
 
 function App() {
   const [gridData, setGridData] = useState(
@@ -38,59 +37,6 @@ function App() {
         item.id === id ? { ...item, image: null, memo: "", keyword: "" } : item
       )
     );
-  };
-
-  const handleDownload = async () => {
-    if (gridRef.current) {
-      try {
-        // キャプチャ前に要素のスタイルを保存
-        const originalStyle = gridRef.current.style.cssText;
-
-        // キャプチャ用のスタイルを設定
-        gridRef.current.style.position = "relative";
-        gridRef.current.style.transform = "none";
-        gridRef.current.style.width = `${gridRef.current.offsetWidth}px`;
-        gridRef.current.style.height = `${gridRef.current.offsetHeight}px`;
-        gridRef.current.style.margin = "0";
-        gridRef.current.style.padding = "0";
-        gridRef.current.style.display = "grid";
-        gridRef.current.style.gridTemplateColumns = "repeat(3, 1fr)";
-        gridRef.current.style.gap = "1px";
-
-        const canvas = await html2canvas(gridRef.current, {
-          backgroundColor: null,
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-          logging: false,
-          onclone: (clonedDoc) => {
-            const clonedElement = clonedDoc.querySelector("[data-grid-ref]");
-            if (clonedElement) {
-              clonedElement.style.transform = "none";
-              clonedElement.style.position = "relative";
-              clonedElement.style.width = `${gridRef.current.offsetWidth}px`;
-              clonedElement.style.height = `${gridRef.current.offsetHeight}px`;
-              clonedElement.style.margin = "0";
-              clonedElement.style.padding = "0";
-              clonedElement.style.display = "grid";
-              clonedElement.style.gridTemplateColumns = "repeat(3, 1fr)";
-              clonedElement.style.gap = "1px";
-            }
-          },
-        });
-
-        // 元のスタイルを復元
-        gridRef.current.style.cssText = originalStyle;
-
-        const link = document.createElement("a");
-        link.download = "9grid.png";
-        link.href = canvas.toDataURL("image/png", 1.0);
-        link.click();
-      } catch (error) {
-        console.error("画像の保存に失敗しました:", error);
-        alert("画像の保存に失敗しました。もう一度お試しください。");
-      }
-    }
   };
 
   return (
@@ -163,12 +109,9 @@ function App() {
 
         {/* フッター */}
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 w-full max-w-md sm:max-w-lg md:max-w-xl px-2">
-          <button
-            className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white px-8 py-3 rounded-full font-medium hover:opacity-90 transition-opacity shadow-lg hover:shadow-xl"
-            onClick={handleDownload}
-          >
-            📸 9マス画像を保存する
-          </button>
+          <div className="w-full text-center text-pink-500 font-medium">
+            📸 スクリーンショットを撮ってシェアしよう！
+          </div>
 
           {/* 広告 */}
           <div className="mt-4 w-full">
